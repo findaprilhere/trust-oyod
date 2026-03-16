@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Own Your Own Development — Trust</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:       #0f1f3d;
+      --navy-mid:   #1a3260;
+      --teal:       #0e9f8e;
+      --teal-light: #e0f5f3;
+      --teal-mid:   #b2e8e3;
+      --amber:      #f59e0b;
+      --amber-light:#fef9ec;
+      --amber-mid:  #fde68a;
+      --red-light:  #fef2f2;
+      --red-mid:    #fecaca;
+      --gray-50:    #f9fafb;
+      --gray-100:   #f3f4f6;
+      --gray-200:   #e5e7eb;
+      --gray-400:   #9ca3af;
+      --gray-500:   #6b7280;
+      --gray-700:   #374151;
+      --text:       #111827;
+      --white:      #ffffff;
+      --shadow-sm:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md:  0 4px 12px rgba(0,0,0,.10), 0 2px 4px rgba(0,0,0,.06);
+      --shadow-lg:  0 10px 30px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+      --radius:     12px;
+      --radius-sm:  8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--gray-50);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    /* ────────────────── HERO ────────────────── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1e4a7a 100%);
+      position: relative;
+      overflow: hidden;
+      padding: 64px 24px 56px;
+      text-align: center;
+    }
+
+    /* subtle geometric shapes */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: rgba(14,159,142,.12);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -40px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: rgba(14,159,142,.08);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(14,159,142,.2);
+      border: 1px solid rgba(14,159,142,.4);
+      color: #5eead4;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+    }
+    .hero-badge svg { width: 12px; height: 12px; }
+
+    .hero h1 {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      position: relative;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #5eead4, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      margin-top: 12px;
+      color: rgba(255,255,255,.65);
+      font-size: 1rem;
+      position: relative;
+    }
+
+    /* ────────────────── NAV ────────────────── */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-inner a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 16px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-500);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color .15s, border-color .15s;
+    }
+    .nav-inner a:hover { color: var(--teal); border-bottom-color: var(--teal-mid); }
+    .nav-inner a.active { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }
+
+    /* ────────────────── LAYOUT ────────────────── */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 24px 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+    }
+
+    /* ────────────────── SECTION HEADERS ────────────────── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .section-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--teal), #0891b2);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(14,159,142,.3);
+    }
+    .section-title h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+    .section-title p {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+      margin-top: 2px;
+    }
+
+    /* ────────────────── CALLOUTS ────────────────── */
+    .callout {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--teal-light);
+      border: 1px solid var(--teal-mid);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+    .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .callout strong { color: var(--teal); }
+    .callout a { color: var(--teal); font-weight: 500; }
+    .callout a:hover { text-decoration: underline; }
+
+    .callout-amber {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--amber-light);
+      border: 1px solid var(--amber-mid);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 0.9rem;
+      margin: 16px 0;
+    }
+    .callout-amber strong { color: #92400e; }
+
+    /* ────────────────── FLOW DIAGRAM ────────────────── */
+    .flow { margin: 8px 0 24px; }
+
+    .flow-track {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .flow-node {
+      flex: 1;
+      min-width: 140px;
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .flow-node:hover { border-color: var(--teal); box-shadow: var(--shadow-md); }
+    .flow-node.teal { border-color: var(--teal-mid); background: var(--teal-light); }
+    .flow-node.navy { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .flow-node.navy a { color: #5eead4; }
+    .flow-node-step {
+      display: inline-block;
+      background: var(--teal);
+      color: var(--white);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+    }
+    .flow-node.navy .flow-node-step { background: rgba(255,255,255,.2); }
+    .flow-node-text { font-size: 0.88rem; font-weight: 500; line-height: 1.4; }
+    .flow-node-text a { color: var(--teal); font-weight: 600; }
+
+    .flow-arrow {
+      color: var(--gray-400);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .flow-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0;
+      color: var(--gray-400);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .flow-divider::before, .flow-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray-200);
+    }
+
+    /* ────────────────── FORK ────────────────── */
+    .fork {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 8px 0;
+    }
+    .fork-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 20px;
+      font-size: 0.9rem;
+      box-shadow: var(--shadow-sm);
+      border: 1.5px solid var(--gray-200);
+      line-height: 1.6;
+    }
+    .fork-card.green { border-top: 4px solid var(--teal); }
+    .fork-card.amber { border-top: 4px solid var(--amber); }
+    .fork-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .fork-tag.green { background: var(--teal-light); color: #0f766e; }
+    .fork-tag.amber { background: var(--amber-light); color: #92400e; }
+    .fork-card a { color: var(--teal); font-weight: 500; }
+    .fork-card a:hover { text-decoration: underline; }
+    .fork-card p { margin-top: 8px; }
+    .fork-card .cta {
+      display: inline-block;
+      margin-top: 12px;
+      background: var(--teal);
+      color: var(--white);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      text-decoration: none;
+    }
+    .fork-card .cta:hover { background: #0b8577; text-decoration: none; }
+    .fork-card .cta.amber-btn { background: var(--amber); }
+    .fork-card .cta.amber-btn:hover { background: #d97706; }
+
+    /* ────────────────── RESOURCE CARDS ────────────────── */
+    .subsection-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gray-400);
+      margin: 24px 0 10px;
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .resource-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow .15s, border-color .15s, transform .15s;
+    }
+    .resource-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--teal);
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+    .rc-icon {
+      width: 40px; height: 40px;
+      background: var(--gray-100);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .rc-body { min-width: 0; }
+    .rc-title { font-weight: 600; font-size: 0.9rem; color: var(--navy); }
+    .rc-desc { font-size: 0.8rem; color: var(--gray-500); margin-top: 3px; line-height: 1.4; }
+
+    /* ────────────────── NUMBERED STEPS ────────────────── */
+    .steps-list { display: flex; flex-direction: column; gap: 10px; counter-reset: ramp-step; }
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 0.9rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .step-item::before {
+      counter-increment: ramp-step;
+      content: counter(ramp-step);
+      min-width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--teal), #0891b2);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.8rem;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(14,159,142,.35);
+    }
+    .step-item a { color: var(--teal); font-weight: 500; }
+
+    /* ────────────────── Q&A ────────────────── */
+    .qa-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .qa-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      border: 1.5px solid var(--gray-200);
+    }
+    .qa-item::before {
+      content: '?';
+      min-width: 22px; height: 22px;
+      background: var(--navy);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.75rem;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ────────────────── FOOTER ────────────────── */
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--gray-200);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--gray-400);
+    }
+    footer a { color: var(--teal); }
+
+    /* ────────────────── GLOBAL LINKS ────────────────── */
+    a { color: var(--teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ────────────────── RESPONSIVE ────────────────── */
+    @media (max-width: 640px) {
+      .fork { grid-template-columns: 1fr; }
+      .resource-grid { grid-template-columns: 1fr; }
+      .flow-track { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+      main { padding: 32px 16px 64px; gap: 48px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-badge">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6c0 5.25 3.47 10.17 8 11.38C16.53 21.17 20 16.25 20 11V5l-8-3z"/></svg>
+    Trust · People Ops
+  </div>
+  <h1>Own Your Own <span>Development</span></h1>
+  <p>Your guide to OYOD — courses, conferences &amp; Ramp</p>
+</div>
+
+<!-- ══ NAV ══ -->
+<div class="sticky-nav">
+  <div class="nav-inner">
+    <a href="#courses">📚 Taking a Course</a>
+    <a href="#conferences">🎤 Attending a Conference</a>
+    <a href="#ramp">💳 Ramp</a>
+    <a href="#resources">🔗 All Resources</a>
+  </div>
+</div>
+
+<main>
+
+  <!-- ══════════════ COURSES ══════════════ -->
+  <section id="courses">
+    <div class="section-header">
+      <div class="section-icon">📚</div>
+      <div class="section-title">
+        <h2>Taking a Course</h2>
+        <p>How to request and expense a course through OYOD</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div>
+        <strong>Start here:</strong> All OYOD requests must align with
+        <a href="https://vault.shopify.io/page/Expensing-Professional-Development---Own-Your-Own-Development-OYOD~210.md#our-guiding-principles" target="_blank">Shopify's guiding principles</a>.
+        Courses are capped at <strong>$5,000 per year</strong>.
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="flow-track">
+        <div class="flow-node teal">
+          <div class="flow-node-step">Step 1</div>
+          <div class="flow-node-text">Find a course &amp; discuss with your lead</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node teal">
+          <div class="flow-node-step">Step 2</div>
+          <div class="flow-node-text">Check the <a href="https://docs.google.com/spreadsheets/d/1hM84c_RgRNb-rovTS2rapVwSZNRrWlgkSTz7FdwVH_o/edit?gid=1002896698#gid=1002896698" target="_blank">Discipline List</a></div>
+        </div>
+      </div>
+
+      <div class="flow-divider">Then, which path fits you?</div>
+
+      <div class="fork">
+        <div class="fork-card green">
+          <span class="fork-tag green">✅ Course is on the list</span>
+          <p>Your lead approves the use case in Trust.</p>
+          <p>No form submission needed — you can move straight to requesting a Ramp card.</p>
+          <a href="#ramp" class="cta">→ Get your Ramp card</a>
+        </div>
+        <div class="fork-card amber">
+          <span class="fork-tag amber">⚠️ Course is NOT on the list</span>
+          <p>Fill out the <a href="https://docs.google.com/document/d/1h64zlimzt7Ti3YvIbEtEiW9MvxNhZV8Pz-pUJWx_NX0/copy" target="_blank">OYOD Request Form</a> (L&amp;D template).</p>
+          <p>Submit to Trust SLT via the <a href="https://forms.gle/7VZrjM3V4kJUxRhCA" target="_blank">Trust Google Form</a>.</p>
+          <p>SLT will review within ~<strong>1 week</strong> and notify you. If approved → request Ramp card.</p>
+          <a href="https://forms.gle/7VZrjM3V4kJUxRhCA" target="_blank" class="cta amber-btn">→ Submit to SLT</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout-amber">
+      <span class="callout-icon">⚠️</span>
+      <div><strong>Heads up:</strong> Courses over <strong>$5K total spend</strong> always require SLT approval, even if the course is on the discipline list.</div>
+    </div>
+
+    <div class="subsection-label">Course Resources</div>
+    <div class="resource-grid">
+      <a class="resource-card" href="https://vault.shopify.io/page/Expensing-Professional-Development---Own-Your-Own-Development-OYOD~210.md" target="_blank">
+        <div class="rc-icon">📖</div>
+        <div class="rc-body">
+          <div class="rc-title">OYOD Vault Page</div>
+          <div class="rc-desc">Full guidelines, guiding principles &amp; policy</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://vault.shopify.io/page/Take-a-course-professional-dues-professional-publications~2221.md" target="_blank">
+        <div class="rc-icon">🎓</div>
+        <div class="rc-body">
+          <div class="rc-title">Take a Course — Vault</div>
+          <div class="rc-desc">Vault guidelines specifically for course expenses</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://docs.google.com/spreadsheets/d/1hM84c_RgRNb-rovTS2rapVwSZNRrWlgkSTz7FdwVH_o/edit?gid=1002896698#gid=1002896698" target="_blank">
+        <div class="rc-icon">📋</div>
+        <div class="rc-body">
+          <div class="rc-title">Discipline List</div>
+          <div class="rc-desc">Pre-approved courses by discipline — skip the Trust form</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://docs.google.com/document/d/1h64zlimzt7Ti3YvIbEtEiW9MvxNhZV8Pz-pUJWx_NX0/copy" target="_blank">
+        <div class="rc-icon">📝</div>
+        <div class="rc-body">
+          <div class="rc-title">OYOD Request Form</div>
+          <div class="rc-desc">L&amp;D template — copy, fill out, share with your lead</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://forms.gle/7VZrjM3V4kJUxRhCA" target="_blank">
+        <div class="rc-icon">📨</div>
+        <div class="rc-body">
+          <div class="rc-title">Trust SLT Submission Form</div>
+          <div class="rc-desc">Submit off-list course requests for SLT review</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://vault.shopify.io/page/Book-Bar~758.md" target="_blank">
+        <div class="rc-icon">📚</div>
+        <div class="rc-body">
+          <div class="rc-title">Book Bar</div>
+          <div class="rc-desc">Order books through Shopify — no Ramp card needed</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════ CONFERENCES ══════════════ -->
+  <section id="conferences">
+    <div class="section-header">
+      <div class="section-icon">🎤</div>
+      <div class="section-title">
+        <h2>Attending a Conference</h2>
+        <p>All conferences go through Trust SLT — here's the process</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">🔍</span>
+      <div>
+        <strong>Trust lens:</strong> Before submitting, your lead should review the request using the
+        <a href="https://docs.google.com/document/d/1_3xw0noSI4pEdUrKCYXr93zCSwzz2UcBRV__41Fu8Ts/edit" target="_blank">Trust SLT Checklist</a> — it highlights what strengthens a case for approval.
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="flow-track">
+        <div class="flow-node teal">
+          <div class="flow-node-step">Step 1</div>
+          <div class="flow-node-text">Review <a href="https://vault.shopify.io/page/Attend-a-Conference~2223.md" target="_blank">conference guidelines</a> on Vault</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node teal">
+          <div class="flow-node-step">Step 2</div>
+          <div class="flow-node-text">Fill out <a href="https://docs.google.com/document/d/1h64zlimzt7Ti3YvIbEtEiW9MvxNhZV8Pz-pUJWx_NX0/copy" target="_blank">OYOD Request Form</a></div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node teal">
+          <div class="flow-node-step">Step 3</div>
+          <div class="flow-node-text">Lead reviews with <a href="https://docs.google.com/document/d/1_3xw0noSI4pEdUrKCYXr93zCSwzz2UcBRV__41Fu8Ts/edit" target="_blank">Trust checklist</a></div>
+        </div>
+      </div>
+
+      <div class="flow-divider">↓ Lead supports your request</div>
+
+      <div class="flow-track">
+        <div class="flow-node teal">
+          <div class="flow-node-step">Step 4</div>
+          <div class="flow-node-text">Submit to Trust SLT via <a href="https://forms.gle/7VZrjM3V4kJUxRhCA" target="_blank">Google Form</a></div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node teal">
+          <div class="flow-node-step">Step 5</div>
+          <div class="flow-node-text">SLT reviews within ~1 week</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node navy">
+          <div class="flow-node-step">Approved</div>
+          <div class="flow-node-text"><a href="#ramp">Request your Ramp card →</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection-label">Key questions to address in your request</div>
+    <div class="qa-list">
+      <div class="qa-item">Why this conference? What specifically will you gain from it?</div>
+      <div class="qa-item">How do you plan to share back what you learned with your team?</div>
+      <div class="qa-item">How does this connect to your current role and work in Trust?</div>
+    </div>
+
+    <div class="subsection-label">Conference Resources</div>
+    <div class="resource-grid">
+      <a class="resource-card" href="https://vault.shopify.io/page/Attend-a-Conference~2223.md" target="_blank">
+        <div class="rc-icon">📖</div>
+        <div class="rc-body">
+          <div class="rc-title">Attend a Conference — Vault</div>
+          <div class="rc-desc">Full Vault guidelines for conference attendance</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://vault.shopify.io/page/Expensing-Professional-Development---Own-Your-Own-Development-OYOD~210.md" target="_blank">
+        <div class="rc-icon">📖</div>
+        <div class="rc-body">
+          <div class="rc-title">OYOD Vault Page</div>
+          <div class="rc-desc">Guiding principles &amp; full OYOD policy</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://docs.google.com/document/d/1_3xw0noSI4pEdUrKCYXr93zCSwzz2UcBRV__41Fu8Ts/edit" target="_blank">
+        <div class="rc-icon">✅</div>
+        <div class="rc-body">
+          <div class="rc-title">Trust SLT Checklist</div>
+          <div class="rc-desc">For leads — what strengthens a request for approval</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://docs.google.com/document/d/1h64zlimzt7Ti3YvIbEtEiW9MvxNhZV8Pz-pUJWx_NX0/copy" target="_blank">
+        <div class="rc-icon">📝</div>
+        <div class="rc-body">
+          <div class="rc-title">OYOD Request Form</div>
+          <div class="rc-desc">Copy and complete this template to propose a conference</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://forms.gle/7VZrjM3V4kJUxRhCA" target="_blank">
+        <div class="rc-icon">📨</div>
+        <div class="rc-body">
+          <div class="rc-title">Trust SLT Submission Form</div>
+          <div class="rc-desc">Submit your completed request for SLT review</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════ RAMP ══════════════ -->
+  <section id="ramp">
+    <div class="section-header">
+      <div class="section-icon">💳</div>
+      <div class="section-title">
+        <h2>Ramp — Getting &amp; Using Your Card</h2>
+        <p>Once approved, here's how to expense your OYOD spend</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">✅</span>
+      <div>Only request a Ramp card once you have approval — or if your course is already on the discipline list and your lead has signed off.</div>
+    </div>
+
+    <div class="subsection-label">Steps to get your Ramp card</div>
+    <div class="steps-list">
+      <div class="step-item">Log in to <a href="https://app.ramp.com" target="_blank">Ramp</a> and request the <strong>OYOD virtual card</strong> — it's specifically for professional development spend.</div>
+      <div class="step-item">Your manager will receive a notification to approve the card — give them a heads up so it moves quickly.</div>
+      <div class="step-item">Once the card is issued, use the virtual card number to register for your course or conference.</div>
+      <div class="step-item">Attach your receipts in Ramp and add a memo with the course/conference name and how it relates to your work in Trust.</div>
+      <div class="step-item">If your expense is declined or you're unsure which card to request, ping your lead or post in <a href="https://shopify.slack.com/archives/C07H86STHBJ" target="_blank">#trust-people-leads</a>.</div>
+    </div>
+
+    <div class="subsection-label">Ramp Resources</div>
+    <div class="resource-grid">
+      <a class="resource-card" href="https://app.ramp.com" target="_blank">
+        <div class="rc-icon">💳</div>
+        <div class="rc-body">
+          <div class="rc-title">Ramp App</div>
+          <div class="rc-desc">Log in to request your OYOD virtual card</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://vault.shopify.io/page/Expensing-Professional-Development---Own-Your-Own-Development-OYOD~210.md" target="_blank">
+        <div class="rc-icon">📖</div>
+        <div class="rc-body">
+          <div class="rc-title">OYOD Vault — Expensing</div>
+          <div class="rc-desc">How to expense professional development in Ramp</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════ ALL RESOURCES ══════════════ -->
+  <section id="resources">
+    <div class="section-header">
+      <div class="section-icon">🔗</div>
+      <div class="section-title">
+        <h2>All Resources at a Glance</h2>
+        <p>Everything you need in one place</p>
+      </div>
+    </div>
+
+    <div class="subsection-label">Vault Pages</div>
+    <div class="resource-grid">
+      <a class="resource-card" href="https://vault.shopify.io/page/Expensing-Professional-Development---Own-Your-Own-Development-OYOD~210.md" target="_blank">
+        <div class="rc-icon">📖</div>
+        <div class="rc-body">
+          <div class="rc-title">OYOD Vault Page</div>
+          <div class="rc-desc">Main policy — guiding principles &amp; expensing</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://vault.shopify.io/page/Attend-a-Conference~2223.md" target="_blank">
+        <div class="rc-icon">🎤</div>
+        <div class="rc-body">
+          <div class="rc-title">Attend a Conference</div>
+          <div class="rc-desc">Conference-specific guidelines</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://vault.shopify.io/page/Take-a-course-professional-dues-professional-publications~2221.md" target="_blank">
+        <div class="rc-icon">🎓</div>
+        <div class="rc-body">
+          <div class="rc-title">Take a Course</div>
+          <div class="rc-desc">Course &amp; professional dues guidelines</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://vault.shopify.io/page/Book-Bar~758.md" target="_blank">
+        <div class="rc-icon">📚</div>
+        <div class="rc-body">
+          <div class="rc-title">Book Bar</div>
+          <div class="rc-desc">Order books through Shopify</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="subsection-label">Forms &amp; Templates</div>
+    <div class="resource-grid">
+      <a class="resource-card" href="https://docs.google.com/document/d/1h64zlimzt7Ti3YvIbEtEiW9MvxNhZV8Pz-pUJWx_NX0/copy" target="_blank">
+        <div class="rc-icon">📝</div>
+        <div class="rc-body">
+          <div class="rc-title">OYOD Request Form</div>
+          <div class="rc-desc">Copy &amp; complete before talking to your lead</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://forms.gle/7VZrjM3V4kJUxRhCA" target="_blank">
+        <div class="rc-icon">📨</div>
+        <div class="rc-body">
+          <div class="rc-title">Trust SLT Submission Form</div>
+          <div class="rc-desc">For off-list courses &amp; all conferences</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://docs.google.com/document/d/1_3xw0noSI4pEdUrKCYXr93zCSwzz2UcBRV__41Fu8Ts/edit" target="_blank">
+        <div class="rc-icon">✅</div>
+        <div class="rc-body">
+          <div class="rc-title">Trust SLT Checklist</div>
+          <div class="rc-desc">For leads — what strengthens a request</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://docs.google.com/spreadsheets/d/1hM84c_RgRNb-rovTS2rapVwSZNRrWlgkSTz7FdwVH_o/edit?gid=1002896698#gid=1002896698" target="_blank">
+        <div class="rc-icon">📋</div>
+        <div class="rc-body">
+          <div class="rc-title">Discipline List</div>
+          <div class="rc-desc">Pre-approved courses — no Trust form needed</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Questions? Post in <a href="https://shopify.slack.com/archives/C07H86STHBJ" target="_blank">#trust-people-leads</a>
+  &nbsp;·&nbsp; Maintained by Trust People Ops &nbsp;·&nbsp; Last updated March 2026
+</footer>
+
+<script>
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-inner a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-inner a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
